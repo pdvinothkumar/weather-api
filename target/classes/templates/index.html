@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+      <title>Spring Boot - Weather App</title>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <!--<script src="/js/postrequest.js"></script>
+         <script src="/js/getrequest.js"></script> -->
+      <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+      <script>
+         $( document ).ready(function() {
+         
+         var url = window.location;
+         
+         // SUBMIT FORM
+          $("#weatherForm").submit(function(event) {
+			 // Prevent the form from submitting via the browser.
+			 event.preventDefault();
+			 ajaxPost();
+         });
+          
+          function ajaxPost(){
+          	
+          	// PREPARE FORM DATA
+          	var countryName = $("#countryName").val();    		
+          	
+          	
+          	// DO POST
+          	$.ajax({
+				 type : "POST",
+				 contentType : "application/json",
+				 url : url + "/getWeatherStatus?name="+countryName+"",
+				 //data : JSON.stringify(formData),
+				 //dataType : 'json',
+				 success : function(result) {
+					if(result != null ){
+// 						$("#postResultDiv").html("<strong>" + "Post Successfully! Customer's Info: countryName = " 
+// 								+ result.data.countryName + "</strong>");
+								
+								
+// 						$('#getResultDiv .list-group li').remove();
+// 						var custList = "";
+// 						$.each(result.data, function(i, customer){
+// 							var customer = "Customer " + i + ": FirstName=" + customer.firstname + " ,LastName=" + customer.lastname;
+// 							$('#getResultDiv .list-group').append('<li><h4 class="list-group-item">'+customer+'</h4></li>')
+// 						 });
+						
+						$('#getResultDiv .list-group a').remove();
+						$('#getResultDiv .list-group').append
+						('<a href="#" class="list-group-item active"><h4 class="list-group-item-heading">'+result.name+'</h4><p class="list-group-item-text"><h4>'+result.weather[0].main+'</h4><h4>'+new Date()+'</h4></p><img th:src="@{/imgs/50d.png}"></img><p class="list-group-item-text"><h4>'+result.main.humidity+'&deg; C</h4></p></a>');
+						console.log("Success: ", result);
+						
+						
+					}else{
+						$("#postResultDiv").html("<strong>Error</strong>");
+					}
+					//console.log(result);
+				 },
+				 error : function(e) {
+					alert("Error!")
+					console.log("ERROR: ", e);
+						
+				 }
+			});
+          	
+          	// Reset FormData after Posting
+          	resetData();
+         
+          }          
+			  function resetData(){
+				$("#countryName").val("");
+			  }
+         });
+         
+      </script>
+   </head>
+   <body>
+      <div class="container">
+         <h1>Weather Now</h1>
+         <div id="postdiv" class="jumbotron">
+			<form id="weatherForm" method="post">
+				<div class="input-group">
+					<input type="text" id="countryName" class="form-control" placeholder="Search" list="countries" name="mycountry"/>
+					<div class="input-group-btn">
+						<button id="postBtn" class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+					</div>
+					
+					<datalist id="countries">
+						<option value="NewYork">NewYork</option>
+						<option value="Singapore">Singapore</option>
+						<option value="London">London</option>
+						<option value="Paris">Paris</option>
+						<option value="Kualalumpur">Kualalumpur</option>
+					</datalist>
+				</div>
+			</form>
+         </div>
+         <div id="postResultDiv">
+         </div>
+         <br/>   
+         <div id="getResultDiv">                        
+            <div class="list-group">
+            </div>
+         </div>
+         <div id="getdiv">
+            <button id="getBtn" >Get All Customers</button>
+         </div>
+      </div>
+   </body>
+</html>
